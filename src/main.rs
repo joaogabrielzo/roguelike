@@ -1,13 +1,15 @@
 mod components;
 mod player;
+mod map;
 
 use rltk::{GameState, Rltk, RGB};
 use specs::prelude::*;
 
-use crate::player::*;
+use crate::components::Player;
 use crate::components::Position;
 use crate::components::Renderable;
-use crate::components::Player;
+use crate::player::*;
+use crate::map::*;
 
 fn main() -> rltk::BError {
     use rltk::RltkBuilder;
@@ -19,6 +21,8 @@ fn main() -> rltk::BError {
     gs.ecs.register::<Position>();
     gs.ecs.register::<Renderable>();
     gs.ecs.register::<Player>();
+
+    gs.ecs.insert(new_map());
 
     gs.ecs
         .create_entity()
@@ -43,6 +47,9 @@ impl GameState for State {
         ctx.cls();
 
         player_input(self, ctx);
+
+        let map = self.ecs.fetch::<Vec<TileType>>();
+        draw_map(&map, ctx);
 
         let positions = self.ecs.read_storage::<Position>();
         let renderables = self.ecs.read_storage::<Renderable>();
