@@ -1,5 +1,3 @@
-use crate::TileType;
-
 pub struct Rect {
     pub x1: i32,
     pub x2: i32,
